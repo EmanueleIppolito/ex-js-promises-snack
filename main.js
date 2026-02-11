@@ -23,17 +23,33 @@ Se il numero esce due volte di fila, stampa "Incredibile!". */
 
 
 const getPostTitle = (id) => {
+  return new Promise((resolve, reject) => {
+    fetch(`https://dummyjson.com/posts/${id}`)
+      .then(res => res.json())
+      .then(post => resolve(post.title))
+      .catch(reject);
+  });
+};
+
+const getPost = (id) => {
     return new Promise((resolve, reject) => {
         fetch(`https://dummyjson.com/posts/${id}`)
-        .then(response => response.json())
-        .then(data => resolve({
-          title: data.title,
-          author: data.userId
-        }))
-        .catch(error => reject(error))
+          .then(resolve => resolve.json())
+          .then(post => {
+            fetch(`https://dummyjson.com/users/${post.userId}`)
+              .then(resolve => resolve.json())
+              .then(user => {
+                post.user = [user.firstName, user.lastName];
+                resolve({id: post.id,
+              title: post.title,
+              body: post.body,
+              user: [user.firstName, user.lastName]});
+              })
+          })
+          .catch(reject);
     })
-}
+  }
 
-getPostTitle(1)
-.then(({title, author}) => {console.log(`Titolo: ${title}, Autore: ${author}`)})
-.catch(error => console.error(error))
+getPost(1)
+  .then(post => console.log(post))
+  .catch(console.error);
