@@ -53,3 +53,58 @@ const getPost = (id) => {
 getPost(1)
   .then(post => console.log(post))
   .catch(console.error);
+
+
+//Snack 2
+
+const lanciaDado = () =>{
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const risultato = Math.floor(Math.random() * 6) + 1;
+            if (Math.random() < 0.2) {
+                reject("Il dado si è incastrato!");
+            } else {
+                resolve(risultato);
+            }
+        }, 3000);
+    });
+}
+    
+
+//Snack 2 Bonus
+
+const creaLanciaDado = () => {
+    let ultimoLancio = null;
+    return () => {
+        return lanciaDado()
+        .then(risultato => {
+            if (risultato === ultimoLancio) {
+                console.log("Incredibile!");
+            }
+            ultimoLancio = risultato;
+            return risultato;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+};
+
+const lancio = creaLanciaDado();
+
+lancio()
+  .then(n => {
+    console.log("Primo:", n);
+    return lancio();
+  })
+  .then(n => {
+    console.log("Secondo:", n);
+    return lancio();
+  })
+  .then(n => {
+    console.log("Terzo:", n);
+    return lancio();
+  })
+  .catch(err => {
+    console.error("Errore:", err);
+  });
