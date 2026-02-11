@@ -38,16 +38,11 @@ const getPost = (id) => {
           .then(post => {
             fetch(`https://dummyjson.com/users/${post.userId}`)
               .then(resolve => resolve.json())
-              .then(user => {
-                post.user = [user.firstName, user.lastName];
-                resolve({id: post.id,
-              title: post.title,
-              body: post.body,
-              user: [user.firstName, user.lastName]});
+              .then(user => resolve({ ...post, user }));
+              .catch(reject);
               })
-          })
           .catch(reject);
-    })
+    });
   }
 
 getPost(1)
